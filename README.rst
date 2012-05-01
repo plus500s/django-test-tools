@@ -35,16 +35,15 @@ Utils
 
         user = model_factory(User, username='john')
 
-    Factory will return NOT saved user object by default. To make an actual insert
-    save=True should be passed as following::
+Factory will return NOT saved user object by default. To make an actual insert save=True should be passed as following::
 
         user = model_factory(User, username='john', save=True)
 
-    There is a possibility to create a bunch of objects::
+There is a possibility to create a bunch of objects::
 
         user = model_factory(User, username=['john', 'tom'], last_name=['Smith', 'Green'], save=True)
 
-    The length of every list should be equal.
+The length of every list should be equal.
 
 
 #. ``test_tools.utils.get_fake_email``: Simply return one or more fake emails::
@@ -67,7 +66,7 @@ Utils
         def test_something(self):
             pass
     
-    Then you can read the log by something like::
+Then you can read the log by something like::
     
         stats = hotshot.stats.load('/tmp/my_test.prof')
         stats.strip_dirs()

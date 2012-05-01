@@ -22,13 +22,13 @@ def call_test_db_command(command):
         connection = connections[alias]
         old_name = connection.settings_dict["NAME"]
         test_db_name = get_test_db_name(connection)
-        reset_connection(connection, test_db_name)
         if not old_name.startswith('test_'):
+            reset_connection(connection, test_db_name)
             call_command(command,
                 interactive=False,
                 database=connection.alias,
                 load_initial_data=False)
-        reset_connection(connection, old_name)
+            reset_connection(connection, old_name)
 
 
 @receiver(post_syncdb)

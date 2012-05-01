@@ -19,8 +19,11 @@ Installation
 #. Set test runner as following:
 
     TEST_RUNNER = 'test_tools.test_runner.DiscoveryDjangoTestSuiteRunner'
+    
     if you are using jenkins you can use:
+    
     JENKINS_TEST_RUNNER = 'test_tools.test_runner.JenkinsDiscoveryDjangoTestSuiteRunner'
+    
     (note, `django_jenkins` should be in your INSTALLED_APPS as well)
 
 #. Create test database so application can sync it and probably migrate. Note,
@@ -46,8 +49,7 @@ save=True should be passed as following:
 
 There is a possibility to create a bunch of objects:
 
-        user = model_factory(User, username=['john', 'tom'],
-                                    last_name=['Smith', 'Green'], save=True)
+    user = model_factory(User, username=['john', 'tom'], last_name=['Smith', 'Green'], save=True)
 
 The length of every list should be equal.
 
@@ -56,8 +58,10 @@ The length of every list should be equal.
 
 Simply return one or more fake emails.
 
-        get_fake_email() # will return 'email_0@example.com'
-        get_fake_email(2) # will return ['email_0@example.com', 'email_1@example.com']
+    get_fake_email() 
+    # this will return 'email_0@example.com'
+    get_fake_email(2) 
+    # this will return ['email_0@example.com', 'email_1@example.com']
 
 
 ``test_tools.utils.site_required``
@@ -78,19 +82,19 @@ sure that test shouldn't access database.
 Decorator which writes a profiling log with hotshot module. You can specify
 the folder by PROFILE_LOG_BASE in settings.py. It is set to /tmp by default.
 
-        @profile('my_test.prof')
-        def test_something(self):
-            pass
-
+    @profile('my_test.prof')
+    def test_something(self):
+        pass
+    
 Then you can read the log by something like
 
-        stats = hotshot.stats.load('/tmp/my_test.prof')
-        stats.strip_dirs()
-        stats.sort_stats('time')
-        stats.print_stats(10)
+    stats = hotshot.stats.load('/tmp/my_test.prof')
+    stats.strip_dirs()
+    stats.sort_stats('time')
+    stats.print_stats(10)
 
 
 
 TODOs and BUGS
 =================
-Feel free to submit those.
+Feel free to submit those: https://github.com/plus500s/django-test-tools/issues

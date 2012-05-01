@@ -75,7 +75,6 @@ Utils
         stats.print_stats(10)
 
 
-
 TODOs and BUGS
 =================
 Feel free to submit those: https://github.com/plus500s/django-test-tools/issues

@@ -16,20 +16,15 @@ Installation
 #. Add `test_tools` to your `INSTALLED_APPS` setting so Django can find the
    signals.
 
-#. Set test runner as following:
+#. Set test runner. You can use jenkins test runner as well but django_jenkins 
+   should be in your INSTALLED_APPS:
 
     TEST_RUNNER = 'test_tools.test_runner.DiscoveryDjangoTestSuiteRunner'
-    
-if you are using jenkins you can use:
-    
     JENKINS_TEST_RUNNER = 'test_tools.test_runner.JenkinsDiscoveryDjangoTestSuiteRunner'
     
-(note that django_jenkins should be in your INSTALLED_APPS as well)
-
-
 #. Create test database so application can sync it and probably migrate. Name 
-    for test database can be set in DATABASES as TEST_NAME. If TEST_NAME
-    is not provided the 'test_' prefix would be added to regular database NAME.
+   for test database can be set in DATABASES as TEST_NAME. If TEST_NAME
+   is not provided the 'test_' prefix would be added to regular database NAME.
 
 
 

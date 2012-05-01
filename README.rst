@@ -29,10 +29,9 @@ Installation
 
 
 Utils
-=================
+============
 
-#. `test_tools.utils.model_factory`: Factory for creating objects in place 
-    since fixtures may be slow and hard to maintain sometimes. The basic usage::
+#. ``test_tools.utils.model_factory`` Factory for creating objects in place since fixtures may be slow and hard to maintain sometimes. The basic usage::
 
         user = model_factory(User, username='john')
 
@@ -48,7 +47,7 @@ Utils
     The length of every list should be equal.
 
 
-#. `test_tools.utils.get_fake_email`: Simply return one or more fake emails::
+#. ``test_tools.utils.get_fake_email``: Simply return one or more fake emails::
 
         get_fake_email() 
         # this will return 'email_0@example.com'
@@ -56,18 +55,13 @@ Utils
         # this will return ['email_0@example.com', 'email_1@example.com']
 
 
-#. `test_tools.utils.site_required`: This decorator simply creates a Site 
-    object before decorated test or test case runs.
+#. ``test_tools.utils.site_required``: This decorator simply creates a Site object before decorated test or test case runs.
 
 
-#. `test_tools.utils.no_database`: Decorator which replace django's cursor 
-    with mock object and raise an error if test trying to access database. 
-    Wrap your test with @no_database if you are sure that test shouldn't access database.
+#. ``test_tools.utils.no_database``: Decorator which replace django's cursor with mock object and raise an error if test trying to access database. Wrap your test with @no_database if you are sure that test shouldn't access database.
 
 
-#. `test_tools.utils.profile`: Decorator which writes a profiling log with 
-    hotshot module. You can specify the folder by PROFILE_LOG_BASE in settings.py. 
-    It is set to /tmp by default::
+#. ``test_tools.utils.profile``: Decorator which writes a profiling log with hotshot module. You can specify the folder by PROFILE_LOG_BASE in settings.py. It is set to /tmp by default::
 
         @profile('my_test.prof')
         def test_something(self):

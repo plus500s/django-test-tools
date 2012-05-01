@@ -1,0 +1,9 @@
+*.pyc
+*.DS_Store
+*~
+django_test_tools.egg-info
+/dist
+/build
+.project
+.pydevproject
+.settings

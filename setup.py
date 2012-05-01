@@ -12,7 +12,7 @@ setup(
     download_url='https://github.com/django-debug-toolbar/django-debug-toolbar/downloads',
     license='BSD',
     packages=find_packages(exclude=('tests', 'example')),
-    tests_require=[
+    install_requires=[
         'django>=1.1,<1.5',
         'mock>=0.8.0',
     ],

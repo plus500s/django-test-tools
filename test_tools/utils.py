@@ -18,11 +18,91 @@ except AttributeError:
     PROFILE_LOG_BASE = "/tmp"
 
 
+class DebugList(list):
+    '''
+    Extended list that provide diff functionality for model objects
+    '''
+    fields = None
+
+    def __init__(self, *args, **kwargs):
+        ''' Intialize tracked fields '''
+        self.fields = kwargs.pop('fields', None)
+        super(DebugList, self).__init__(*args, **kwargs)
+
+    def get_order_diff(self, objects, message):
+        ''' Build wrong order message '''
+        convert_to_id = lambda obj: obj.id
+        actual_ids = map(convert_to_id, objects)
+        expected_ids = map(convert_to_id, self)
+        diff = reason = ''
+        if actual_ids != expected_ids and set(actual_ids) == set(expected_ids):
+            reason = "Wrong ID order"
+            diff = "Expect: {0}\nGot:    {1}".format(
+                ' '.join(map(str, actual_ids)),
+                ' '.join(map(str, expected_ids)))
+            msg = message.format(reason, diff)
+            return msg
+
+    def get_diff(self, objects, ordered=False):
+        ''' Build a diff message '''
+        message = "{0}\n{1}"
+        reason = None
+        diff = ''
+        if len(self) != len(objects):
+            reason = "Expected length: {0} but got {1} objects".format(
+                                                    len(self), len(objects))
+        elif ordered:
+            msg = self.get_order_diff(objects, message)
+            if msg is not None:
+                return msg
+
+        map_objects = lambda obj_list: {obj.id: obj for obj in obj_list}
+        missed_objects = filter(lambda obj: not obj.id in map_objects(objects),
+                                                                        self)
+        extra_objects = filter(lambda obj: not obj.id in map_objects(self),
+                                                                    objects)
+
+        def build_diff(obj_list):
+            ''' Create text message for object '''
+            result = []
+            for obj in obj_list:
+                fields = {}
+                for field_name in self.fields:
+                    fields[field_name] = getattr(obj, field_name)
+                fields = map(lambda key_value: '{0}={1}'.format(*key_value),
+                    fields.items())
+                result.append('{0}({1})'.format(obj.__class__.__name__,
+                                                ', '.join(fields)))
+            return result
+
+        if not reason and (missed_objects or extra_objects):
+            reason = "Expected and actual objects are different"
+
+        if missed_objects:
+            diff = "Missed objects: \n{0}".format(
+                                    "\n".join(build_diff(missed_objects)))
+
+        if extra_objects:
+            diff += "\n\nExtra objects: \n{0}".format(
+                                        "\n".join(build_diff(extra_objects)))
+
+        return message.format(reason, diff)
+
+    def has_diff(self, objects, ordered=False):
+        ''' Return true if all the objects has the same ids as in self '''
+        actual_ids = map(lambda obj: obj.id, objects)
+        expected_ids = map(lambda obj: obj.id, self)
+        if len(actual_ids) != len(expected_ids):
+            return True
+        if ordered:
+            return actual_ids != expected_ids
+        return set(actual_ids) != set(expected_ids)
+
+
 def model_factory(model, *args, **kwargs):
     ''' Simple object fabric for tests '''
     save = kwargs.pop('save', False)
     kwargs = SortedDict(kwargs)
-    models = []
     if kwargs and not isinstance(kwargs.values()[0], list):
         for key in kwargs:
             kwargs[key] = [kwargs[key]]
@@ -33,6 +113,7 @@ def model_factory(model, *args, **kwargs):
             return model.objects.create(*args, **_kwargs)
         return model(*args, **_kwargs)
 
+    models = DebugList(fields=kwargs.keys())
     if kwargs:
         model_kwargs = map(lambda value: dict(zip(kwargs.keys(), value)),
                        zip(*kwargs.values()))

@@ -26,7 +26,7 @@ class DebugList(list):
 
     def __init__(self, *args, **kwargs):
         ''' Intialize tracked fields '''
-        self.fields = kwargs.pop('fields', None)
+        self.fields = kwargs.pop('fields', ['id'])
         super(DebugList, self).__init__(*args, **kwargs)
 
     def get_order_diff(self, objects, message):

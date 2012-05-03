@@ -41,9 +41,21 @@ Utils
 
    There is a possibility to create a bunch of objects::
 
-        user = model_factory(User, username=['john', 'tom'], last_name=['Smith', 'Green'], save=True)
+        users = model_factory(User, username=['john', 'tom'], last_name=['Smith', 'Green'], save=True)
 
-   The length of every list should be equal.
+   The length of every list should be equal. Besides that model_factory return DebugList object which has methods to build a diffs for list of objects. Here is an example::
+   
+        excpected_users = model_factory(User, username=['john', 'tom'], last_name=['Smith', 'Green'], save=True)
+        self.assertEqual(excpected_users, actual_users, excpected_users.get_diff(actual_users))
+        # You would get something like::
+        
+        AssertionError: Expected length: 3 but got 4 objects
+        Missed objects: 
+        Discount(already_used=2, active=False, allowed_uses=1, start_date=2012-05-03 12:07:22.080689, end_date=2012-05-03 12:07:22.080689)
+        
+        Extra objects: 
+        Discount(already_used=None, active=True, allowed_uses=None, start_date=2012-05-10, end_date=2012-05-03)
+        Discount(already_used=None, active=True, allowed_uses=None, start_date=2012-05-03, end_date=2012-04-26)
 
 
 #. ``test_tools.utils.get_fake_email``: Simply return one or more fake emails::

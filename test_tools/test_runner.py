@@ -133,11 +133,12 @@ class DiscoveryDjangoTestSuiteRunner(PersistentTestDatabaseMixin,
         for importer, module_name, ispkg in pkgutil.iter_modules(
                                 [os.path.dirname(module.__file__)]):
             try:
-                module = import_module('.'.join([app_name, 'tests',
-                                         module_name]))
-            except ImportError:
+                import_module('.'.join([app_name, 'tests']))
+            except ImportError, e:
                 pass
             else:
+                module = import_module('.'.join([app_name, 'tests',
+                                             module_name]))
                 yield defaultTestLoader.loadTestsFromModule(module)
 
     def load_from_app(self, app_name):

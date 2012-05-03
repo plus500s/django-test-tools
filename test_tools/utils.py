@@ -104,10 +104,7 @@ class DebugList(list):
 def model_factory(model, *args, **kwargs):
     ''' Simple object fabric for tests '''
     save = kwargs.pop('save', False)
-    num = kwargs.pop('num', False)
-    if num and kwargs:
-        raise TypeError('You must provide either num or kwargs. \
-Not both at the same time.')
+    num = kwargs.pop('num', 1)
     kwargs = SortedDict(kwargs)
     if kwargs and not isinstance(kwargs.values()[0], list):
         for key in kwargs:
@@ -123,7 +120,7 @@ Not both at the same time.')
     if kwargs:
         model_kwargs = map(lambda value: dict(zip(kwargs.keys(), value)),
                        zip(*kwargs.values()))
-        for model_kw in model_kwargs:
+        for model_kw in model_kwargs * num:
             models.append(_create_model_obj(**model_kw))
     elif num:
         for counter in range(num):

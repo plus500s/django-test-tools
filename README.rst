@@ -34,6 +34,8 @@ Utils
 #. ``test_tools.utils.model_factory`` Factory for creating objects in place since fixtures may be slow and hard to maintain sometimes. The basic usage::
 
         user = model_factory(User, username='john')
+        # or
+        user1, user2 = model_factory(User, username='john', num=2)
 
    Factory will return NOT saved user object by default. To make an actual insert save=True should be passed as following::
 
@@ -42,6 +44,9 @@ Utils
    There is a possibility to create a bunch of objects::
 
         users = model_factory(User, username=['john', 'tom'], last_name=['Smith', 'Green'], save=True)
+        # note, that
+        model_factory(User, username=['john', 'tom'], num=2)
+        # will return [User('john'), User('john'), User('tom'), User('tom')]
 
    The length of every list should be equal. Besides that model_factory return DebugList object which has methods to build a diffs for list of objects. Here is an example::
    

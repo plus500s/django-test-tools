@@ -45,6 +45,8 @@ class DebugList(list):
 
     def get_diff(self, objects, ordered=False):
         ''' Build a diff message '''
+        if not isinstance(objects, list):
+            objects = list(objects)
         message = "{0}\n{1}"
         reason = None
         diff = ''

@@ -34,7 +34,7 @@ def call_test_db_command(command):
 @receiver(post_syncdb)
 def sync_test_db(sender, **kwargs):
     ''' Syncing test database '''
-    app_label = sender.__name__.split('.')[-2]
+    app_label = '.'.join(sender.__name__.split('.')[:-1])
     if app_label == settings.INSTALLED_APPS[-1]:
         call_test_db_command('syncdb')
 

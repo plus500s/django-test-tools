@@ -26,7 +26,12 @@ def is_custom_test_package(module):
 
 def get_test_module(app_name):
     ''' Import tests module '''
-    return import_module('.'.join([app_name, 'tests']))
+    module_name = '.'.join([app_name, 'tests'])
+    try:
+        return import_module(module_name)
+    except ImportError, exception:
+        if exception.message == 'No module named tests':
+            raise ImportError('No module named {0}'.format(module_name))
 
 
 def get_test_db_name(connection):
@@ -163,33 +168,37 @@ class DiscoveryDjangoTestSuiteRunner(PersistentTestDatabaseMixin,
     def build_suite(self, test_labels, extra_tests=None, **kwargs):
         suite = unittest.TestSuite()
         if test_labels:
-            for label in test_labels:
+            for test_label in test_labels:
                 # Handle case when app defined with dot
-                if '.' in label and label not in self.get_apps():
-                    parts = label.split('.')
+                if '.' in test_label and test_label not in self.get_apps():
+                    app_name = test_label.split('.')[0]
+                    for app_label in self.get_apps():
+                        if test_label.startswith(app_label):
+                            app_name = app_label
+                    test_module = get_test_module(app_name)
 
-                    test_module = get_test_module(parts[0])
-
-                    new_suite = build_suite(get_app(parts[0]))
+                    parts = test_label[len(app_name) + 1:].split('.')
+                    test_module_name = parts[0]
+                    new_suite = build_suite(get_app(app_name.split('.')[-1]))
                     if is_custom_test_package(test_module) and not \
                                                         suite.countTestCases():
-                        test_module = import_module('.'.join([parts[0],
-                                                        'tests', parts[1]]))
+                        test_module = import_module('.'.join([
+                                        app_name, 'tests', test_module_name]))
 
                         parts_num = len(parts)
-                        if parts_num == 2:
+                        if parts_num == 1:
                             new_suite = defaultTestLoader.loadTestsFromModule(
                                                                 test_module)
-                        if parts_num == 3:
+                        if parts_num == 2:
                             new_suite = defaultTestLoader.loadTestsFromName(
-                                                        parts[2], test_module)
-                        elif parts_num == 4:
-                            klass = getattr(test_module, parts[2])
-                            new_suite = klass(parts[3])
+                                                        parts[1], test_module)
+                        elif parts_num == 3:
+                            klass = getattr(test_module, parts[1])
+                            new_suite = klass(parts[2])
 
                     suite.addTest(new_suite)
                 else:
-                    for test_suite in self.load_from_app(label):
+                    for test_suite in self.load_from_app(test_label):
                         suite.addTest(test_suite)
         else:
             for app in self.get_apps():

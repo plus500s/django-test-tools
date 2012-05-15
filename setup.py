@@ -1,5 +1,11 @@
 from setuptools import setup, find_packages
 
+class A():
+    x = 43
+
+a = A()
+
+
 setup(
     name='django-test-tools',
     version='0.1',

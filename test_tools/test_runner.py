@@ -143,21 +143,16 @@ class DiscoveryDjangoTestSuiteRunner(PersistentTestDatabaseMixin,
 
     def load_from_app(self, app_name):
         ''' Yielding a suite from application '''
-
         app = get_app(app_name.split('.')[-1])
-        try:
-            test_module = get_test_module(app_name)
-        except ImportError:
-            pass
+        suite = build_suite(app)
+        if suite.countTestCases():
+            yield suite
         else:
-            suite = build_suite(app)
-            if is_custom_test_package(test_module) and \
-                                            not suite.countTestCases():
+            test_module = get_test_module(app_name)
+            if is_custom_test_package(test_module):
                 for test in self.load_custom_test_package(test_module,
                                                           app_name):
                     yield test
-            else:
-                yield suite
 
     def get_apps(self):
         try:
@@ -167,10 +162,10 @@ class DiscoveryDjangoTestSuiteRunner(PersistentTestDatabaseMixin,
 
     def build_suite(self, test_labels, extra_tests=None, **kwargs):
         suite = unittest.TestSuite()
-
         if test_labels:
             for label in test_labels:
-                if '.' in label:
+                # Handle case when app defined with dot
+                if '.' in label and label not in self.get_apps():
                     parts = label.split('.')
 
                     test_module = get_test_module(parts[0])

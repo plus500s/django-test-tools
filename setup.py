@@ -19,7 +19,7 @@ setup(
     license='BSD',
     packages=find_packages(exclude=('tests', 'example')),
     install_requires=[
-        'django>=1.1,<1.5',
+        'django>=1.1',
         'mock>=0.8.0',
     ],
     test_suite='runtests.runtests',

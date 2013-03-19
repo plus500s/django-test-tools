@@ -36,7 +36,7 @@ def sync_test_db(sender, **kwargs):
     ''' Syncing test database '''
     app_label = '.'.join(sender.__name__.split('.')[:-1])
     if app_label == settings.INSTALLED_APPS[-1]:
-        call_test_db_command('syncdb')
+        call_test_db_command('syncdb --noinput')
 
 
 if 'south' in settings.INSTALLED_APPS:

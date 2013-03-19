@@ -1,14 +1,16 @@
 '''Simple test case '''
 
 from django.test import TestCase
-from test_tools.utils import model_factory
+from profilehooks import timecall, profile
+import urllib2
 from django.contrib.auth.models import User
 
 
 class SimpleTestCase(TestCase):
     ''' Simple test case '''
 
+    @profile
     def test_something(self):
-        ''' Dummy test '''
-        user = model_factory(User, save=True)
-        self.assertTrue(user.id is not None)
+        ''' Dummy test '''   
+        for i in xrange(1000):
+            User(username='john_{}'.format(i))
